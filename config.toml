@@ -1,0 +1,12 @@
+
+[database]
+  database = ""
+  file = "db.bolt"
+  host = ""
+  password = ""
+  port = 0
+  type = "bolt"
+  username = ""
+
+[server]
+  port = 8080
