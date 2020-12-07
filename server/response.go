@@ -7,8 +7,9 @@ import (
 )
 
 type Response struct {
-	Status string `json:"status"`
-	Error  string `json:"error,omitempty"`
+	Status     string `json:"status"`
+	Error      string `json:"error,omitempty"`
+	StatusCode int    `json:"status_code"`
 }
 
 func (self *Response) Marshal() (string, error) {

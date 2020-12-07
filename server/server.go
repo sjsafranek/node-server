@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/sjsafranek/lemur"
 	"github.com/sjsafranek/logger"
 	"github.com/sjsafranek/node-server/config"
 	"github.com/sjsafranek/node-server/database"
-	"github.com/sjsafranek/node-server/httprouter"
 	"github.com/sjsafranek/node-server/models"
 )
 
@@ -17,7 +17,7 @@ func New(conf config.Configuration) (*Server, error) {
 		return &Server{}, err
 	}
 
-	router := httprouter.New()
+	router := lemur.New()
 	server := &Server{db: db, config: conf, router: router}
 	server.Init()
 	return server, err
@@ -26,7 +26,7 @@ func New(conf config.Configuration) (*Server, error) {
 type Server struct {
 	db     models.Database
 	config config.Configuration
-	router httprouter.Router
+	router lemur.HttpRouter
 }
 
 func (self *Server) GetDatabase() models.Database {

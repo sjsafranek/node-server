@@ -2,10 +2,9 @@ package server
 
 import (
 	"errors"
-	"io/ioutil"
 	"net/http"
 
-	"github.com/sjsafranek/node-server/httprouter"
+	"github.com/sjsafranek/lemur"
 )
 
 func httpError(w http.ResponseWriter, statusCode int) {
@@ -18,7 +17,7 @@ func httpError(w http.ResponseWriter, statusCode int) {
 }
 
 func (self *Server) HttpGetKeyHandler(w http.ResponseWriter, r *http.Request) {
-	vars := httprouter.Vars(r)
+	vars := lemur.Vars(r)
 
 	bucketId := vars["bucketId"]
 	bucket, err := self.db.Get(bucketId)
@@ -38,7 +37,7 @@ func (self *Server) HttpGetKeyHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func (self *Server) HttpSetKeyHandler(w http.ResponseWriter, r *http.Request) {
-	vars := httprouter.Vars(r)
+	vars := lemur.Vars(r)
 
 	bucketId := vars["bucketId"]
 	bucket, err := self.db.Get(bucketId)
@@ -47,15 +46,11 @@ func (self *Server) HttpSetKeyHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	body, err := ioutil.ReadAll(r.Body)
-	if nil != err {
-		httpError(w, http.StatusBadRequest)
-		return
-	}
-	defer r.Body.Close()
+	err = lemur.Body(r, func(body []byte) error {
+		key := vars["key"]
+		return bucket.Set(key, body)
+	})
 
-	key := vars["key"]
-	err = bucket.Set(key, body)
 	if nil != err {
 		httpError(w, http.StatusInternalServerError)
 		return
